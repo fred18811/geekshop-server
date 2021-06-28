@@ -13,7 +13,10 @@ def index(request):
 
 
 def products(request):
+    context = {
+        'title': 'GeekShop',
+        'date' : datetime.datetime.now(),
+    }
     with open('products/fixtures/goods.json', encoding='utf-8') as data_file:
-        context = json.loads(data_file.read())
-    context['date'] = datetime.datetime.now()
+        context['products'] = json.loads(data_file.read())
     return render(request, 'products/products.html', context)
