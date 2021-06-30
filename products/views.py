@@ -2,6 +2,7 @@ import datetime
 import json
 
 from django.shortcuts import render
+from products.models import Product
 
 
 # Create your views here.
@@ -17,6 +18,6 @@ def products(request):
         'title': 'GeekShop',
         'date' : datetime.datetime.now(),
     }
-    with open('products/fixtures/goods.json', encoding='utf-8') as data_file:
-        context['products'] = json.loads(data_file.read())
+    context['products'] = Product.objects.all()
+
     return render(request, 'products/products.html', context)

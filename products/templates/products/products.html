@@ -70,8 +70,17 @@
                             <h5>{{porduct.price}} руб.</h5>
                             <p class="card-text">{{ porduct.description|capfirst }}</p>
                         </div>
+                            {% if porduct.quantitly != 0%}
+                            <p style="text-align:center;">Колличество: {{porduct.quantitly}}</p>
+                            {% else %}
+                            <p style="color:red; text-align: center;">Товар закончился</p>
+                            {% endif %}
                         <div class="card-footer text-center">
+                            {% if porduct.quantitly != 0%}
                             <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                            {% else %}
+                            <button type="button" class="btn btn-outline-danger" disabled>Отправить в корзину</button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
