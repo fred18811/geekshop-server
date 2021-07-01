@@ -16,7 +16,7 @@ def index(request):
 def products(request):
     context = {
         'title': 'GeekShop',
-        'date' : datetime.datetime.now(),
+        'date': datetime.datetime.now(),
     }
     context['products'] = Product.objects.all()
 

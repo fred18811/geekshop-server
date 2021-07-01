@@ -60,7 +60,11 @@
                     <div class="card h-100">
                         <a href="#">
                             <img class="card-img-top"
-                                 src="{% static 'vendor/img/products/' %}{{ porduct.img }}"
+                                 {% if porduct.image != '' %}
+                                 src="{{ porduct.image.url }}"
+                                 {% else %}
+                                 src="{% static 'vendor/img/products/noimg.jpg' %}"
+                                 {% endif %}
                                  alt="">
                         </a>
                         <div class="card-body">
