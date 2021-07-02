@@ -2,7 +2,7 @@ import datetime
 import json
 
 from django.shortcuts import render
-from products.models import Product
+from products.models import Product, ProductsCategory
 
 
 # Create your views here.
@@ -19,5 +19,6 @@ def products(request):
         'date': datetime.datetime.now(),
     }
     context['products'] = Product.objects.all()
+    context['categorys'] = ProductsCategory.objects.all()
 
     return render(request, 'products/products.html', context)
