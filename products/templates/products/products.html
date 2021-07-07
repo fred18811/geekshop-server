@@ -79,9 +79,9 @@
                             {% endif %}
                         <div class="card-footer text-center">
                             {% if porduct.quantitly != 0%}
-                            <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                                <a href="{% url 'baskets:basket_add' porduct.id %}" class="btn btn-outline-success">Отправить в корзину</a>
                             {% else %}
-                            <button type="button" class="btn btn-outline-danger" disabled>Отправить в корзину</button>
+                                <button type="button" class="btn btn-outline-danger" disabled>Отправить в корзину</button>
                             {% endif %}
                         </div>
                     </div>
