@@ -1,0 +1,55 @@
+{% extends 'admins/base.html' %}
+
+{% block content %}
+    <main>
+            <div class="container-fluid">
+                <h1 class="mt-4">Продукты</h1>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-table mr-1"></i>
+                        Продукты
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                <tr>
+                                    <th>Имя продукта</th>
+                                    <th>Описание</th>
+                                    <th>Цена</th>
+                                    <th>Колличество</th>
+                                    <th>Категория</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>Имя продукта</th>
+                                    <th>Описание</th>
+                                    <th>Цена</th>
+                                    <th>Колличество</th>
+                                    <th>Категория</th>
+                                </tr>
+                                </tfoot>
+                                <tbody>
+                                {% for prodact in prodacts %}
+                                    <tr>
+                                        <td><a href="{% url 'admins:admin_prodacts_update' prodact.id %}" style="color: dodgerblue">{{ prodact.name }}</a></td>
+                                        <td>{{ prodact.description }}</td>
+                                        <td>{{ prodact.price }}</td>
+                                        <td>{{ prodact.quantitly }}</td>
+                                        <td>{{ prodact.category }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'admins:admin_prodacts_create' %}">
+                            <button class="btn btn-success">Добавить товар</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+{% endblock %}
