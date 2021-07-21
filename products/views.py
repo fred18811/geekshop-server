@@ -3,6 +3,7 @@ import datetime
 from django.shortcuts import render
 from products.models import Product, ProductsCategory
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic.list import ListView
 
 
 def index(request):
@@ -12,22 +13,22 @@ def index(request):
     return render(request, 'products/index.html', context)
 
 
-def products(request, category_id=None, page=1):
-    context = {
-        'title': 'GeekShop - Каталог',
-        'date': datetime.datetime.now(),
-        'categorys': ProductsCategory.objects.all(),
-    }
-    if category_id:
-        products = Product.objects.filter(category_id=category_id)
-    else:
-        products = Product.objects.all()
-    paginator = Paginator(products, 3)
-    try:
-        products_paginator = paginator.page(page)
-    except PageNotAnInteger:
-        products_paginator = paginator.page(1)
-    except EmptyPage:
-        products_paginator = paginator.page(paginator.num_pages)
-    context['products'] = products_paginator
-    return render(request, 'products/products.html', context)
+class ProdactsListView(ListView):
+    model = Product
+    paginate_by = 3
+    template_name = 'products/products.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProdactsListView, self).get_context_data()
+        context['title'] = 'GeekShop - Каталог'
+        context['date'] = datetime.datetime.now()
+        context['categorys'] = ProductsCategory.objects.all()
+        return context
+
+    def get_queryset(self):
+        category_pk = self.request.GET.get('pk', None)
+        qs = super().get_queryset()
+        if category_pk:
+            self.paginate_by = 0
+            return qs.filter(category_id=category_pk)
+        return qs

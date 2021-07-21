@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from django.contrib import auth, messages
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from baskets.models import Basket
 from django.contrib.auth.decorators import login_required
+
 
 def login(request):
     if request.method == 'POST':
