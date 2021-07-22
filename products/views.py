@@ -2,7 +2,6 @@ import datetime
 
 from django.shortcuts import render
 from products.models import Product, ProductsCategory
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic.list import ListView
 
 
@@ -30,5 +29,5 @@ class ProdactsListView(ListView):
         qs = super().get_queryset()
         if category_pk:
             self.paginate_by = 0
-            return qs.filter(category_id=category_pk)
+            return qs.filter(category_id = category_pk)
         return qs
