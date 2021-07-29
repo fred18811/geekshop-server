@@ -11,6 +11,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.conf import settings
 from django.core.mail import send_mail
 
+
 class LoginLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
@@ -44,7 +45,10 @@ class UsersCreateView(CreateView):
                 print('success sending')
             else:
                 print('sending failed')
-            return HttpResponseRedirect(reverse('users:login'))
+            return HttpResponseRedirect(reverse('users:profile'))
+        else:
+            messages.error(self.request, 'Такой пользователь или почта уже существуют!')
+            return HttpResponseRedirect(reverse('users:registration'))
 
 
 class LogoutLogoutView(LogoutView):
@@ -68,8 +72,17 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
-def verify(request):
-    pass
+def verify(request, email, activation_key):
+    user = User.objects.filter(email=email).first()
+    print(user)
+    if user:
+        if user.activation_key == activation_key and not user.is_activation_key_expired():
+            user.is_active = True
+            user.save()
+            auth.login(request, user)
+            messages.success(request, "Учетная запись активирована")
+        return HttpResponseRedirect(reverse('users:profile'))
+    return HttpResponseRedirect(reverse('index'))
 
 
 def send_verify_mail(user):
