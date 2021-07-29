@@ -1,0 +1,11 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Verify your account
+From: django@test.local
+To: fred17@ffmail.ru
+Date: Thu, 29 Jul 2021 09:21:53 -0000
+Message-ID: <162755051358.22688.14679951242116045848@simakin.VIMPEL.RU>
+
+http://localhost:8000/users/veryfy/fred17@ffmail.ru/5bb77081ba9219fed234800e0fbfac7590e124f2
+-------------------------------------------------------------------------------
