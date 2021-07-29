@@ -7,9 +7,9 @@ from baskets.models import Basket
 from users.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
-from django.utils.decorators import method_decorator
-from django.contrib.auth.views import LoginView, LogoutView, FormView
-
+from django.contrib.auth.views import LoginView, LogoutView
+from django.conf import settings
+from django.core.mail import send_mail
 
 class LoginLoginView(LoginView):
     template_name = 'users/login.html'
@@ -33,8 +33,18 @@ class UsersCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super(UsersCreateView, self).get_context_data()
         context['title'] = 'GeekShop - Регистрация'
-        messages.success(self.request, 'Вы успешно зарегестрировались!')
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            messages.success(self.request, 'Вы успешно зарегестрировались!')
+            user = form.save()
+            if send_verify_mail(user):
+                print('success sending')
+            else:
+                print('sending failed')
+            return HttpResponseRedirect(reverse('users:login'))
 
 
 class LogoutLogoutView(LogoutView):
@@ -56,3 +66,14 @@ def profile(request):
         'baskets': Basket.objects.filter(user=request.user),
     }
     return render(request, 'users/profile.html', context)
+
+
+def verify(request):
+    pass
+
+
+def send_verify_mail(user):
+    subject = 'Verify your account'
+    link = reverse('users:verify', args=[user.email, user.activation_key])
+    message = f'{settings.DOMAIN}{link}'
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
