@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import os
+import json
 
 from pathlib import Path
 
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
 
     'products',
     'users',
@@ -141,6 +144,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL ='users.User'
 
 LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/'
 
 DOMAIN = 'http://localhost:8000'
 
@@ -154,3 +158,19 @@ EMAIL_USER_SSL = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'tmp/mails/'
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.vk.VKOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
+)
+
+secret_file = './config.json'
+with open(secret_file) as f:
+    SECRETS = json.loads(f.read())
+secret = lambda n: str(SECRETS[n])
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = secret('SOCIAL_AUTH_VK_OAUTH2_KEY')
+SOCIAL_AUTH_VK_OAUTH2_SECRET = secret('SOCIAL_AUTH_VK_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = secret('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = secret('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
