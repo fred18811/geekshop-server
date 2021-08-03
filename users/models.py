@@ -32,7 +32,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True, db_index=True)
     tagline = models.CharField(max_length=150, blank=True)
     about_me = models.TextField(blank=True, verbose_name='о себе')
-    age = models.PositiveIntegerField(verbose_name='воозраст', default=18)
+    age = models.PositiveIntegerField(verbose_name='возраст', default=18)
     gender = models.CharField(choices=GENDER_CHOICES, blank=True, max_length=1, verbose_name='пол')
 
     @receiver(post_save, sender=User)
