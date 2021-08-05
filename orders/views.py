@@ -1,6 +1,8 @@
 from django.forms import inlineformset_factory
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from baskets.models import Basket
 from orders.forms import OrderItemForm
@@ -29,7 +31,7 @@ class OrderItemCreate(CreateView):
             basket_items = Basket.objects.filter(user=self.request.user)
             if basket_items.exists():
                 OrderFormset = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=basket_items.count())
-                formset=OrderFormset()
+                formset = OrderFormset()
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
@@ -86,3 +88,15 @@ class OrderItemUpdate(UpdateView):
 class OrderItemsDelete(DeleteView):
     model = Order
     success_url = reverse_lazy('orders:order_list')
+
+
+class OrderItemsRead(DetailView):
+    model = Order
+
+
+def order_forming_complete(request, pk):
+    order_item = get_object_or_404(Order, pk=pk)
+    order_item.status = Order.SENT_TO_PROCEED
+    order_item.save()
+
+    return  HttpResponseRedirect(reverse('orders:order_list'))
