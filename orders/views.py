@@ -1,6 +1,6 @@
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from baskets.models import Basket
 from orders.forms import OrderItemForm
@@ -81,3 +81,8 @@ class OrderItemUpdate(UpdateView):
             orderitems.save()
 
         return super().form_valid(form)
+
+
+class OrderItemsDelete(DeleteView):
+    model = Order
+    success_url = reverse_lazy('orders:order_list')

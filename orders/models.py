@@ -21,6 +21,7 @@ class Order(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     status = models.CharField(max_length=3, choices=STATUSES, default=FORMING)
+    is_active = models.BooleanField(verbose_name='активен', default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -38,7 +39,11 @@ class Order(models.Model):
 
     def get_total_cost(self):
         items = self.orderitems.select_related()
-        return sum(list(map(lambda x: x.quantity* x.product.price, items)))
+        return sum(list(map(lambda x: x.quantity * x.product.price, items)))
+
+    def delete(self):
+        self.is_active = False
+        self.save()
 
 
 class OrderItem(models.Model):
