@@ -12,7 +12,7 @@ from orders.models import Order, OrderItem
 class OrderList(ListView):
     model = Order
 
-    def get_querset(self):
+    def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
 
 
