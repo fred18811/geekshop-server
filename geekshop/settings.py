@@ -82,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-LOGIN_URL = '/'
+
 
 WSGI_APPLICATION = 'geekshop.wsgi.application'
 

@@ -2,6 +2,7 @@ from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 
+from baskets.models import Basket
 from orders.forms import OrderItemForm
 from orders.models import Order, OrderItem
 
@@ -25,7 +26,15 @@ class OrderItemCreate(CreateView):
         if self.request.method == 'POST':
             formset = OrderFormset(self.request.POST)
         else:
-            formset = OrderFormset()
+            basket_items = Basket.objects.filter(user=self.request.user)
+            if basket_items.exists():
+                OrderFormset = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=basket_items.count())
+                formset=OrderFormset()
+                for num, form in enumerate(formset.forms):
+                    form.initial['product'] = basket_items[num].product
+                    form.initial['quantity'] = basket_items[num].quantity
+            else:
+                formset = OrderFormset()
 
         data['orderitems'] = formset
         return data
