@@ -7,7 +7,8 @@ from django.utils.decorators import method_decorator
 
 from users.models import User
 from products.models import Product
-from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm, ProdactForm
+from orders.models import Order
+from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm, ProdactForm, OrderForm
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -134,3 +135,33 @@ class ProdactDeleteView(DeleteView):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(ProdactDeleteView, self).dispatch(request, *args, **kwargs)
+
+
+class OrderListView(ListView):
+    model = Order
+    template_name = 'admins/admin-orders-read.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(OrderListView, self).get_context_data()
+        context['title'] = 'GeekShop - Заказы'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(OrderListView, self).dispatch(request, *args, **kwargs)
+
+
+class OrderUpdateView(UpdateView):
+    model = Order
+    template_name = 'admins/admin-orders-update.html'
+    form_class = OrderForm
+    success_url = reverse_lazy('admins:admin_orders')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(OrderUpdateView, self).get_context_data()
+        context['title'] = 'GeekShop - Обновление статуса заказа'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(OrderUpdateView, self).dispatch(request, *args, **kwargs)
