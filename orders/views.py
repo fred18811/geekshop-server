@@ -37,7 +37,6 @@ class OrderItemCreate(CreateView):
                     form.initial['quantity'] = basket_items[num].quantity
             else:
                 formset = OrderFormset()
-
         data['orderitems'] = formset
         return data
 
@@ -49,6 +48,9 @@ class OrderItemCreate(CreateView):
         self.object = form.save()
         if orderitems.is_valid():
             orderitems.instance = self.object
+            basket_items = Basket.objects.filter(user=self.request.user)
+            if basket_items.exists():
+                basket_items.delete()
             orderitems.save()
 
         return super().form_valid(form)
