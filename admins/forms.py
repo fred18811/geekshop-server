@@ -27,7 +27,7 @@ class ProdactForm(forms.ModelForm):
         'class': 'form-control py-4', 'placeholder': 'Описание'}))
     price = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Цена'}))
-    quantitly = forms.CharField(widget=forms.TextInput(attrs={
+    quantity = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Колличество'}))
     category = forms.ModelChoiceField(queryset=ProductsCategory.objects.all(),
                                       widget=forms.Select(attrs={'class': 'form-control'}))
@@ -35,7 +35,7 @@ class ProdactForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ('name', 'description', 'price', 'quantitly', 'category', 'image')
+        fields = ('name', 'description', 'price', 'quantity', 'category', 'image')
 
 
 class OrderForm(forms.ModelForm):
