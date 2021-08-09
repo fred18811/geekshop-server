@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'users',
     'baskets',
     'admins',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-LOGIN_URL = '/'
+
 
 WSGI_APPLICATION = 'geekshop.wsgi.application'
 

@@ -1,9 +1,11 @@
 from django import forms
 
+from orders.models import Order
 from users.models import User
 from users.forms import UserRegistrationForm, UserProfileForm
 
 from products.models import Product, ProductsCategory
+
 
 class UserAdminRegistrationForm(UserRegistrationForm):
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)
@@ -27,9 +29,22 @@ class ProdactForm(forms.ModelForm):
         'class': 'form-control py-4', 'placeholder': 'Цена'}))
     quantitly = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control py-4', 'placeholder': 'Колличество'}))
-    category = forms.ModelChoiceField(queryset=ProductsCategory.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
+    category = forms.ModelChoiceField(queryset=ProductsCategory.objects.all(),
+                                      widget=forms.Select(attrs={'class': 'form-control'}))
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}), required=False)
 
     class Meta:
         model = Product
         fields = ('name', 'description', 'price', 'quantitly', 'category', 'image')
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ('status', 'is_active')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
