@@ -1,0 +1,20 @@
+{% extends "products/base.html" %}
+{% load static %}
+
+{% block content %}
+   <div class="category_delete">
+       <div class="h1">Уверены, что хотите удалить?</div>
+       {% include 'orders/includes/inc_order_summary.html' %}
+       <div class="container">
+           <div class="d-grid gap-2 d-md-flex justify-content-md-end ">
+               <div class="btn-group">
+                   <form action="{% url 'orders:order_delete' object.pk %}" method="post">
+                       {% csrf_token %}
+                       <input class="btn btn-danger" type="submit" value="удалить">
+                   </form>
+                       <a class="btn btn-success" href="{% url 'orders:order_list' %}">отмена</a>
+               </div>
+           </div>
+       </div>
+   </div>
+{% endblock %}

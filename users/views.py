@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserProfileFormAdvanced
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
@@ -59,14 +59,17 @@ class LogoutLogoutView(LogoutView):
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(instance=request.user, files=request.FILES, data=request.POST)
-        if form.is_valid():
+        advenced_form = UserProfileFormAdvanced(request.POST, instance=request.user.userprofile)
+        if form.is_valid() and advenced_form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('users:profile'))
     else:
         form = UserProfileForm(instance=request.user)
+        advenced_form = UserProfileFormAdvanced(instance=request.user.userprofile)
     context = {
         'title': 'GeekShop - Профиль',
         'form': form,
+        'advenced_form': advenced_form,
         'baskets': Basket.objects.filter(user=request.user),
     }
     return render(request, 'users/profile.html', context)
@@ -79,7 +82,7 @@ def verify(request, email, activation_key):
         if user.activation_key == activation_key and not user.is_activation_key_expired():
             user.is_active = True
             user.save()
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, "Учетная запись активирована")
         return HttpResponseRedirect(reverse('users:profile'))
     return HttpResponseRedirect(reverse('index'))

@@ -1,0 +1,12 @@
+<div class="btn-group" role="group" aria-label="Basic example">
+       <a class="btn btn-secondary" href="{% url 'orders:order_list' %}">
+           к списку заказов
+       </a>
+       <a class="btn btn-secondary" href="{% url 'index' %}">на главную</a>
+        {% if object.status == 'FM' %}
+           <a class="btn btn-warning" href="{% url 'orders:order_forming_complete' object.pk %}">
+               совершить покупку
+           </a>
+           <a class="btn btn-danger" href="{% url 'orders:order_delete' object.pk %}">удалить</a>
+    {% endif %}
+</div>

@@ -1,5 +1,7 @@
 .idea
 __pycache__/
+config.json
 db.sqlite3
 venv
 media
+tmp
