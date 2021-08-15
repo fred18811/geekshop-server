@@ -21,7 +21,11 @@ window.addEventListener('load',()=>{
 		}	
 	}
 
-	$('.order_form').on('click','input[type=number]',function(){
+    if (!order_total_quantity){
+        orderSummaryRecale()
+    }
+
+	$('.order_form').on('change','input[type=number]',function(){
 		let target = event.target;
 		orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-quantity', ''));
 		if(price_arr[orderitem_num]){
@@ -32,7 +36,7 @@ window.addEventListener('load',()=>{
 		}
 	});
 	
-	$('.order_form').on('click','input[type=checkbox]',function(){
+	$('.order_form').on('change','input[type=checkbox]',function(){
 		let target = event.target;
 		orderitem_num = parseInt(target.name.replace('orderitems-', '').replace('-quantity', ''));
 		if(target.checked){
@@ -43,6 +47,33 @@ window.addEventListener('load',()=>{
 		}
 		orderSummaryUpdate(price_arr[orderitem_num], delta_quantity);
 	});
+
+	$('.order_form').on('change','select',function(){
+        let target = event.target
+        orderitem_num = parseInt(target.name.replace('orderitems-','').replace('-product',''));
+        let orderitem_product_pk = target.options[target.selectedIndex].value;
+
+        $.ajax({
+            url:'/orders/product/' + orderitem_product_pk + '/price',
+            type:'get',
+            success: function(data){
+                price_arr[orderitem_num] = parseFloat(data.price);
+                let price_html = "<span>" + data.price.toString().replace('.',',') + "</span>";
+                let curr_tr = $('.order_form table').find('tr:eq('+(orderitem_num+1)+')');
+                curr_tr.find('td:eq(2)').html(price_html);
+                orderSummaryRecale();
+            }
+        });
+	});
+
+	function orderSummaryRecale(){
+	    for(let i=0; i<TOTAL_FORMS; i++){
+            order_total_quantity += quantity_arr[i];
+            order_total_cost += quantity_arr[i]*price_arr[i];
+        }
+        $('.order_total_quntuty').html(order_total_quantity.toString());
+        $('.order_total_cost').html(Number(order_total_cost.toFixed(2).toString()));
+	}
 	
 	function orderSummaryUpdate(orderitem_price, delta_quantity){
 		delta_cost = orderitem_price * delta_quantity;
