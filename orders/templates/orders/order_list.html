@@ -1,0 +1,65 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'css/products.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+           <div class="h3 text-center head w-100">
+               Ваши заказы,
+               {% if user.first_name %}
+                   {{ user.first_name|title}}
+               {% else %}
+                   Пользователь
+               {% endif %}
+           </div>
+           <table class="table orders_list">
+               <thead>
+                 <tr>
+                   <th>ID</th>
+                   <th>Создан</th>
+                   <th>Обновлен</th>
+                   <th>Статус</th>
+                 </tr>
+               </thead>
+               <tbody>
+                   {% for item in object_list %}
+                        {% if item.is_active %}
+                       <tr>
+                           <td class="td1 orders_list">{{ item.pk }}</td>
+                           <td>{{ item.created|date:"Y-m-d H:i:s" }}</td>
+                           <td>{{ item.updated|date:"Y-m-d H:i:s" }}</td>
+                           <td>{{ item.get_status_display }}</td>
+                           <td>
+                               <a class="btn btn-info btn-sm" href="{% url 'orders:order_read' item.pk %}">
+                                   посмотреть
+                               </a>
+                           </td>
+                           <td>
+                               {% if item.status == 'FM' %}
+                                 <a class="btn btn-secondary btn-sm" href="{% url 'orders:order_update' item.pk %}">
+                                   редактировать
+                                 </a>
+                               {% endif %}
+                           </td>
+                           <td>
+                               {% if item.status == 'FM' %}
+                                 <a class="btn btn-danger btn-sm" href="{% url 'orders:order_delete' item.pk %}">
+                                     удалить
+                                 </a>
+                               {% endif %}
+                           </td>
+                       </tr>
+                        {% endif %}
+                   {% endfor %}
+               </tbody>
+           </table>
+            <div>
+               <a class="btn btn-secondary text-light" href="{% url 'index' %}" role="button">на главную</a>
+               <a class="btn btn-secondary text-light" href="{% url 'orders:order_create' %}" role="button">новый</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
