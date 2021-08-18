@@ -31,7 +31,7 @@
   "image": "products_images/Adidas-hoodie_GwPlYAv.png",
   "description": "Мягкая ткань для свитшотов. Стиль и комфорт – это образ жизни.",
   "price": "6090.00",
-  "quantitly": 20,
+  "quantity": 20,
   "category": 1
  }
 },
@@ -43,7 +43,7 @@
   "image": "products_images/Blue-jacket-The-North-Face.png",
   "description": "Гладкая ткань. Водонепроницаемое покрытие. Легкий и теплый пуховый наполнитель.",
   "price": "23725.00",
-  "quantitly": 10,
+  "quantity": 10,
   "category": 1
  }
 },
@@ -55,7 +55,7 @@
   "image": "products_images/Brown-sports-oversized-top-ASOS-DESIGN.png",
   "description": "Материал с плюшевой текстурой. Удобный и мягкий.",
   "price": "3390.00",
-  "quantitly": 0,
+  "quantity": 0,
   "category": 1
  }
 },
@@ -67,7 +67,7 @@
   "image": "products_images/Black-Nike-Heritage-backpack.png",
   "description": "Плотная ткань. Легкий материал.",
   "price": "2340.00",
-  "quantitly": 5,
+  "quantity": 5,
   "category": 3
  }
 },
@@ -79,7 +79,7 @@
   "image": "products_images/Black-Dr-Martens-shoes.png",
   "description": "Гладкий кожаный верх. Натуральный материал.",
   "price": "13590.00",
-  "quantitly": 51,
+  "quantity": 51,
   "category": 2
  }
 },
@@ -91,7 +91,7 @@
   "image": "",
   "description": "Легкая эластичная ткань сирсакер Фактурная ткань.",
   "price": "2890.00",
-  "quantitly": 77,
+  "quantity": 77,
   "category": 1
  }
 }
