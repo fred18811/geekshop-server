@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserProfileFormAdvanced
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
@@ -11,7 +13,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.conf import settings
 from django.core.mail import send_mail
 
-
+@csrf_exempt
 class LoginLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
@@ -24,7 +26,7 @@ class LoginLoginView(LoginView):
     def get_success_url(self):
         return reverse_lazy('index')
 
-
+@csrf_exempt
 class UsersCreateView(CreateView):
     model = User
     template_name = 'users/registration.html'
@@ -56,6 +58,7 @@ class LogoutLogoutView(LogoutView):
 
 
 #@login_required
+@csrf_exempt
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(instance=request.user, files=request.FILES, data=request.POST)
@@ -74,7 +77,7 @@ def profile(request):
     }
     return render(request, 'users/profile.html', context)
 
-
+@csrf_exempt
 def verify(request, email, activation_key):
     user = User.objects.filter(email=email).first()
     print(user)
@@ -87,7 +90,7 @@ def verify(request, email, activation_key):
         return HttpResponseRedirect(reverse('users:profile'))
     return HttpResponseRedirect(reverse('index'))
 
-
+@csrf_exempt
 def send_verify_mail(user):
     subject = 'Verify your account'
     link = reverse('users:verify', args=[user.email, user.activation_key])
