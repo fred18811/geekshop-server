@@ -55,7 +55,7 @@ class LogoutLogoutView(LogoutView):
     template_name = 'products/index.html'
 
 
-@login_required
+#@login_required
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(instance=request.user, files=request.FILES, data=request.POST)
