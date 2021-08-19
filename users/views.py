@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserProfileFormAdvanced
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
@@ -11,7 +14,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.conf import settings
 from django.core.mail import send_mail
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginLoginView(LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
