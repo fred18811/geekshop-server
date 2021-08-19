@@ -12,17 +12,33 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 
-class LoginLoginView(LoginView):
-    template_name = 'users/login.html'
-    form_class = UserLoginForm
+#class LoginLoginView(LoginView):
+#    template_name = 'users/login.html'
+#    form_class = UserLoginForm
+#
+#    def get_context_data(self, **kwargs):
+#        context = super(LoginLoginView, self).get_context_data()
+#        context['title'] = 'GeekShop - Авторизация'
+#        return context
+#
+#    def get_success_url(self):
+#        return reverse_lazy('index')
 
-    def get_context_data(self, **kwargs):
-        context = super(LoginLoginView, self).get_context_data()
-        context['title'] = 'GeekShop - Авторизация'
-        return context
 
-    def get_success_url(self):
-        return reverse_lazy('index')
+def login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = auth.authenticate(username=username, password=password)
+            if user and user.is_active:
+                auth.login(request, user)
+                return HttpResponseRedirect(reverse('index'))
+    else:
+        form = UserLoginForm()
+    context = {'title': 'GeekShop - Авторизация', 'form': form}
+    return render(request, 'users/login.html', context)
 
 
 class UsersCreateView(CreateView):
