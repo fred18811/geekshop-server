@@ -90,7 +90,7 @@ def profile(request):
         'title': 'GeekShop - Профиль',
         'form': form,
         'advenced_form': advenced_form,
-        'baskets': Basket.objects.filter(user=request.user),
+        'baskets': Basket.objects.filter(user=request.user).select_related(),
     }
     return render(request, 'users/profile.html', context)
 
