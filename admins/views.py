@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
@@ -6,9 +7,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 
 from users.models import User
-from products.models import Product
+from products.models import Product, ProductsCategory
 from orders.models import Order
-from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm, ProdactForm, OrderForm
+from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm, ProdactForm, OrderForm, ProdactCategoryForm
+from django.db import connection
 
 
 @user_passes_test(lambda u: u.is_staff)
@@ -17,6 +19,12 @@ def index(request):
         'title': 'GeekShop - Admin',
     }
     return render(request, 'admins/index.html', context)
+
+
+def db_profile_by_type(prefix, type, queries):
+    update_queries = list(filter(lambda x: type in x['sql'], queries))
+    print(f'db_profile {type} for {prefix}:')
+    [print(query['sql']) for query in update_queries]
 
 
 class UserListView(ListView):
@@ -165,3 +173,68 @@ class OrderUpdateView(UpdateView):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(OrderUpdateView, self).dispatch(request, *args, **kwargs)
+
+
+class ProdactCategoryListView(ListView):
+    model = ProductsCategory
+    template_name = 'admins/admin-category-read.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProdactCategoryListView, self).get_context_data()
+        context['title'] = 'GeekShop - Категории'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProdactCategoryListView, self).dispatch(request, *args, **kwargs)
+
+
+class ProdactCategoryCreateView(CreateView):
+    model = ProductsCategory
+    template_name = 'admins/admin-category-create.html'
+    form_class = ProdactCategoryForm
+    success_url = reverse_lazy('admins:admin_categorys')
+
+    def get_context_data(self, **kwargs):
+        context = super(ProdactCategoryCreateView, self).get_context_data()
+        context['title'] = 'GeekShop - Создание категории'
+        return context
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProdactCategoryCreateView, self).dispatch(request, *args, **kwargs)
+
+
+class ProdactCategoryUpdateView(UpdateView):
+    model = ProductsCategory
+    template_name = 'admins/admin-category-update-delete.html'
+    form_class = ProdactCategoryForm
+    success_url = reverse_lazy('admins:admin_categorys')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProdactCategoryUpdateView, self).get_context_data()
+        context['title'] = 'GeekShop - Обновление\удаление категории'
+        return context
+
+    def form_valid(self, form):
+        if 'discount' in form.cleaned_data:
+            discount = form.cleaned_data['discount']
+            if discount:
+                self.object.product_set.update(price=F('price') * (1 - discount / 100))
+                db_profile_by_type(self.__class__, 'UPDATE', connection.queries)
+
+        return super().form_valid(form)
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProdactCategoryUpdateView, self).dispatch(request, *args, **kwargs)
+
+
+class ProdactCategoryDeleteView(DeleteView):
+    model = ProductsCategory
+    template_name = 'admins/admin-category-update-delete.html'
+    success_url = reverse_lazy('admins:admin_categorys')
+
+    @method_decorator(user_passes_test(lambda u: u.is_staff))
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProdactCategoryDeleteView, self).dispatch(request, *args, **kwargs)

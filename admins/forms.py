@@ -38,6 +38,20 @@ class ProdactForm(forms.ModelForm):
         fields = ('name', 'description', 'price', 'quantity', 'category', 'image')
 
 
+class ProdactCategoryForm(forms.ModelForm):
+    name = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control py-4', 'placeholder': 'Категория'}))
+    description = forms.CharField(widget=forms.Textarea(attrs={
+        'class': 'form-control py-4', 'placeholder': 'Описание'}))
+    discount = forms.IntegerField(label='скидка', required=False, \
+                                  min_value=0, max_value=90, initial=0)
+
+    class Meta:
+        model = Product
+        fields = ('name', 'description', 'discount')
+        #exclude = ()
+
+
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
