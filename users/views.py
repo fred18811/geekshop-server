@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserProfileFormAdvanced
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
@@ -12,17 +15,34 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 
-class LoginLoginView(LoginView):
-    template_name = 'users/login.html'
-    form_class = UserLoginForm
+def login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = auth.authenticate(username=username, password=password)
+            if user and user.is_active:
+                auth.login(request, user)
+                return HttpResponseRedirect(reverse('index'))
+    else:
+        form = UserLoginForm()
+    context = {'title': 'GeekShop - Авторизация', 'form': form}
+    return render(request, 'users/login.html', context)
 
-    def get_context_data(self, **kwargs):
-        context = super(LoginLoginView, self).get_context_data()
-        context['title'] = 'GeekShop - Авторизация'
-        return context
 
-    def get_success_url(self):
-        return reverse_lazy('index')
+# @method_decorator(csrf_exempt, name='dispatch')
+# class LoginLoginView(LoginView):
+#    template_name = 'users/login.html'
+#    form_class = UserLoginForm
+#
+#    def get_context_data(self, **kwargs):
+#        context = super(LoginLoginView, self).get_context_data()
+#        context['title'] = 'GeekShop - Авторизация'
+#        return context
+#
+#    def get_success_url(self):
+#        return reverse_lazy('index')
 
 
 class UsersCreateView(CreateView):
@@ -70,7 +90,7 @@ def profile(request):
         'title': 'GeekShop - Профиль',
         'form': form,
         'advenced_form': advenced_form,
-        'baskets': Basket.objects.filter(user=request.user),
+        'baskets': Basket.objects.filter(user=request.user).select_related(),
     }
     return render(request, 'users/profile.html', context)
 
